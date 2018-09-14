@@ -14,7 +14,7 @@ contract PartMarket is PartMarketBase, PartOwnership {
     event SuccessPartSale(uint256 indexed partId, uint256 price);
     
 	// 부품 판매를 시작합니다.
-	function startPartSale(uint256 partId, uint256 price) whenPartMarketRunning onlyPartMasterOf(partId) public {
+	function startPartSale(uint256 partId, uint256 price) whenPartMarketRunning onlyPartMasterOf(partId) whenNotBlockedPart(partId) public {
 		
 		// 마켓으로 부품 이전
 		transferFrom(msg.sender, this, partId);
@@ -30,7 +30,7 @@ contract PartMarket is PartMarketBase, PartOwnership {
 	}
 	
 	// 부품이 판매되고 있는지 확인합니다.
-	function checkPartForSale(uint256 partId) whenPartMarketRunning public view returns (bool) {
+	function checkPartForSale(uint256 partId) whenPartMarketRunning whenNotBlockedPart(partId) public view returns (bool) {
 		
 		// saleId를 찾습니다.
 		for (uint256 i = 0; i < partSales.length; i += 1) {
@@ -43,7 +43,7 @@ contract PartMarket is PartMarketBase, PartOwnership {
 	}
 	
 	// 부품 ID로부터 판매 정보 ID를 가져옵니다.
-	function findPartSaleIdByPartId(uint256 partId) whenPartMarketRunning public view returns (uint256) {
+	function findPartSaleIdByPartId(uint256 partId) whenPartMarketRunning whenNotBlockedPart(partId) public view returns (uint256) {
 		
 		bool isFound = false;
 		uint256 saleId;
@@ -63,7 +63,7 @@ contract PartMarket is PartMarketBase, PartOwnership {
 	}
 	
 	// 부품 판매를 취소합니다.
-	function cancelPartSale(uint256 partId) whenPartMarketRunning public {
+	function cancelPartSale(uint256 partId) whenPartMarketRunning whenNotBlockedPart(partId) public {
 		
 		bool isFound = false;
 		uint256 saleId;
@@ -95,7 +95,7 @@ contract PartMarket is PartMarketBase, PartOwnership {
 	}
 	
 	// 부품을 구매합니다.
-	function buyPart(uint256 partId) whenPartMarketRunning payable public {
+	function buyPart(uint256 partId) whenPartMarketRunning whenNotBlockedPart(partId) payable public {
 		
 		bool isFound = false;
 		uint256 saleId;

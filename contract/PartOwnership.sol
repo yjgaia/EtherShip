@@ -1,12 +1,12 @@
 pragma solidity ^0.4.24;
 
-import "./EtherShipMaster.sol";
+import "./EtherShipBase.sol";
 import "./ERC/ERC721.sol";
 import "./ERC/ERC721TokenReceiver.sol";
 import "./Util/SafeMath.sol";
 
 // 부품 소유권 관련 기능
-contract PartOwnership is EtherShipMaster, ERC721 {
+contract PartOwnership is EtherShipBase, ERC721 {
 	using SafeMath for uint256;
 	
 	// 부품의 소유주 정보
