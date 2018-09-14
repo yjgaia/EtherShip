@@ -112,7 +112,7 @@ contract PartOwnership is EtherShipBase, ERC721 {
 		uint256 shipId = masterToShipId[from];
 		if (checkAddressMisused(shipIdToMaster[shipId]) != true) {
 			
-			uint8 partLocation = partOrigins[parts[partId].partOriginId].partLocation;
+			uint8 partLocation = parts[partId].partLocation;
 			
 			Ship storage ship = ships[shipId];
 			

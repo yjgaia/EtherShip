@@ -8,11 +8,7 @@ import "./ERC/ERC165.sol";
 // EtherShip 스마트 계약
 contract EtherShip is EtherShipCompany, EtherShipMaster, PartMarket, ERC165 {
 	
-	constructor(uint32 randomSeed) public {
-		
-		// 랜덤 알고리즘 생성
-		mersenneTwister32 = new MersenneTwister32();
-		mersenneTwister32.seedMT(randomSeed);
+	constructor() public {
 		
 		// 계약 생성자를 초기 회사로 등록
 		company = msg.sender;
@@ -24,9 +20,7 @@ contract EtherShip is EtherShipCompany, EtherShipMaster, PartMarket, ERC165 {
 		addPlanet("OmiseGO", 51, 140000000);
 		addPlanet("Qtum", 74, 100000000);
 		
-		// 기본 부품 정보 등록
-		
-		// EOS
+		// EOS 무기 추가
 		addPartOrigin(0, 0, "STD-N010M", 1, 2);
 		addPartOrigin(0, 2, "STP-Z1", 1, 3);
 		addPartOrigin(0, 1, "EPR-C", 1, 2);
@@ -43,7 +37,10 @@ contract EtherShip is EtherShipCompany, EtherShipMaster, PartMarket, ERC165 {
 		addPartOrigin(0, 3, "EOS-CST", 3, 14);
 		addPartOrigin(0, 4, "TT-VT", 3, 15);
 		
-		// TRON
+		//TODO: 나머지 무기들도 추가해줘야합니다.
+		
+		/*
+		// TRON 기본 부품 정보
 		addPartOrigin(1, 0, "STD-N010B", 1, 5);
 		addPartOrigin(1, 2, "PLST-AI", 1, 6);
 		addPartOrigin(1, 1, "TES-LA", 1, 5);
@@ -59,8 +56,8 @@ contract EtherShip is EtherShipCompany, EtherShipMaster, PartMarket, ERC165 {
 		addPartOrigin(1, 1, "NC-C3", 3, 30);
 		addPartOrigin(1, 3, "RIS-451", 3, 18);
 		addPartOrigin(1, 4, "OG-BTC", 3, 17);
-		
-		// Ripple
+	
+		// Ripple 기본 부품 정보
 		addPartOrigin(2, 0, "WA-SANS-F", 1, 7);
 		addPartOrigin(2, 2, "RVV-6", 1, 8);
 		addPartOrigin(2, 1, "NC-F5", 1, 7);
@@ -76,8 +73,8 @@ contract EtherShip is EtherShipCompany, EtherShipMaster, PartMarket, ERC165 {
 		addPartOrigin(2, 1, "NC-B3", 3, 20);
 		addPartOrigin(2, 3, "RIS-774", 3, 19);
 		addPartOrigin(2, 4, "OG-BTB", 3, 20);
-		
-		// OmiseGo
+	
+		// OmiseGo 기본 부품 정보
 		addPartOrigin(3, 0, "WA-SANS-E", 1, 9);
 		addPartOrigin(3, 2, "OJE-92", 1, 10);
 		addPartOrigin(3, 1, "NC-E1", 1, 9);
@@ -93,8 +90,8 @@ contract EtherShip is EtherShipCompany, EtherShipMaster, PartMarket, ERC165 {
 		addPartOrigin(3, 1, "SP-23", 3, 23);
 		addPartOrigin(3, 3, "FTT-100", 3, 30);
 		addPartOrigin(3, 4, "ISTD-100", 3, 22);
-		
-		// Qtum
+	
+		// Qtum 기본 부품 정보
 		addPartOrigin(4, 0, "1110101", 1, 12);
 		addPartOrigin(4, 2, "AP-90", 1, 11);
 		addPartOrigin(4, 1, "TTP-412", 1, 11);
@@ -110,6 +107,17 @@ contract EtherShip is EtherShipCompany, EtherShipMaster, PartMarket, ERC165 {
 		addPartOrigin(4, 1, "GB-10", 3, 26);
 		addPartOrigin(4, 3, "FTT-001", 3, 26);
 		addPartOrigin(4, 4, "ISTD-001", 3, 30);
+		*/
+	}
+	
+	//TODO: 계약 생성 이후 이 함수를 실행해줘야 합니다.
+	function initMersenneTwister32() onlyCompany public {
+		mersenneTwister32 = new MersenneTwister32();
+	}
+	
+	//TODO: initMersenneTwister32 이후 이 함수를 실행해줘야 합니다.
+	function seedMersenneTwister32(uint32 seed) onlyCompany public {
+		mersenneTwister32.seedMT(seed);
 	}
 	
 	//ERC165: 주어진 인터페이스가 구현되어 있는지 확인합니다.

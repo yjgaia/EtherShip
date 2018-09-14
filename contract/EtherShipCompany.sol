@@ -95,9 +95,16 @@ contract EtherShipCompany is PartOwnership {
 	// 운영자가 임의로 부품을 만듭니다.
 	function createPart(uint256 partOriginId) onlyCompany public {
 		
+		PartOrigin memory partOrigin = partOrigins[partOriginId];
+		
 		// 부품 데이터 생성
 		uint256 partId = parts.push(Part({
-			partOriginId : partOriginId
+			partOriginId : partOriginId,
+			planetId : partOrigin.planetId,
+			partLocation : partOrigin.partLocation,
+			name : partOrigin.name,
+			level : partOrigin.level,
+			power : partOrigin.power
 		})).sub(1);
 		
 		// msg.sender를 소유주로 등록

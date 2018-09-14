@@ -170,11 +170,11 @@ contract EtherShipBase {
 			
 			// 총 공격력 계산
 			power = power
-				.add(partOrigins[parts[ship.centerPartId].partOriginId].power)
-				.add(partOrigins[parts[ship.frontPartId].partOriginId].power)
-				.add(partOrigins[parts[ship.rearPartId].partOriginId].power)
-				.add(partOrigins[parts[ship.topPartId].partOriginId].power)
-				.add(partOrigins[parts[ship.bottomPartId].partOriginId].power);
+				.add(parts[ship.centerPartId].power)
+				.add(parts[ship.frontPartId].power)
+				.add(parts[ship.rearPartId].power)
+				.add(parts[ship.topPartId].power)
+				.add(parts[ship.bottomPartId].power);
 		}
 		
 		return power;
@@ -197,9 +197,6 @@ contract EtherShipBase {
 		
 		// 패배 횟수
 		uint256 loseCount;
-		
-		// 메시지 인덱스 (최대 10)
-		uint8 messageIndex;
 	}
 	
 	// 침공 기록 정보 저장소

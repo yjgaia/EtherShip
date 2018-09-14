@@ -47,24 +47,16 @@ contract EtherShipMaster is PartOwnership {
 	}
 	
 	// 부품을 합성합니다.
-	function upgradePart(uint256 part1Id, uint256 part2Id, uint256 part3Id)
-		// 모든 부품을 소유하고 있어야 합니다.
-		onlyPartMasterOf(part1Id) onlyPartMasterOf(part2Id) onlyPartMasterOf(part3Id)
-		// 모든 부품이 차단되어있지 않아야 합니다.
-		whenNotBlockedPart(part3Id) whenNotBlockedPart(part2Id) whenNotBlockedPart(part3Id) public {
-		
-		PartOrigin memory part1Origin = partOrigins[parts[part1Id].partOriginId];
-		PartOrigin memory part2Origin = partOrigins[parts[part2Id].partOriginId];
-		PartOrigin memory part3Origin = partOrigins[parts[part3Id].partOriginId];
+	function upgradePart(uint256 part1Id, uint256 part2Id, uint256 part3Id) public {
 		
 		// 모든 부품의 출신 행성과 레벨이 동일해야함
-		uint256 planetId = part1Origin.planetId;
-		uint256 level = part1Origin.level;
+		uint256 planetId = parts[part1Id].planetId;
+		uint256 level = parts[part1Id].level;
 		require(
-			part2Origin.planetId == planetId &&
-			part3Origin.planetId == planetId &&
-			part2Origin.level == level &&
-			part3Origin.level == level);
+			parts[part2Id].planetId == planetId &&
+			parts[part3Id].planetId == planetId &&
+			parts[part2Id].level == level &&
+			parts[part3Id].level == level);
 		
 		// 다음 레벨의 부품이 하나 이상 있어야 합니다.
 		uint256 nextLevel = level.add(1);
@@ -79,6 +71,8 @@ contract EtherShipMaster is PartOwnership {
 		
 		// 재료로 사용되는 부품들을 회수합니다.
 		transferFrom(msg.sender, this, part1Id);
+		transferFrom(msg.sender, this, part2Id);
+		transferFrom(msg.sender, this, part3Id);
 		
 		// 다음 레벨의 부품을 생성하여 지급합니다.
 		uint32 max;
@@ -89,28 +83,34 @@ contract EtherShipMaster is PartOwnership {
 		}
 		uint32 index = random32(0, max);
 		
-		uint256 selectedPartOriginId;
+		// 부품 원본을 찾습니다.
 		for (i = 0; i < partOrigins.length; i += 1) {
 			partOrigin = partOrigins[i];
 			if (partOrigin.planetId == planetId && partOrigin.level == nextLevel) {
 				nextLevelPartCount -= 1;
 				if (nextLevelPartCount == index) {
-					selectedPartOriginId = i;
+		
+					// 부품 데이터 생성
+					uint256 partId = parts.push(Part({
+						partOriginId : i,
+						planetId : partOrigin.planetId,
+						partLocation : partOrigin.partLocation,
+						name : partOrigin.name,
+						level : partOrigin.level,
+						power : partOrigin.power
+					})).sub(1);
+					
+					// msg.sender를 소유주로 등록
+					partIdToMaster[partId] = msg.sender;
+					partIdToPartIdsIndex[partId] = masterToPartIds[msg.sender].push(partId).sub(1);
+					
+					// 이벤트 발생
+					emit Transfer(0x0, msg.sender, partId);
+					
+					break;
 				}
 			}
         }
-		
-		// 부품 데이터 생성
-		uint256 partId = parts.push(Part({
-			partOriginId : selectedPartOriginId
-		})).sub(1);
-		
-		// msg.sender를 소유주로 등록
-		partIdToMaster[partId] = msg.sender;
-		partIdToPartIdsIndex[partId] = masterToPartIds[msg.sender].push(partId).sub(1);
-		
-		// 이벤트 발생
-		emit Transfer(0x0, msg.sender, partId);
 	}
 	
 	// 행성을 침략합니다.
@@ -144,9 +144,9 @@ contract EtherShipMaster is PartOwnership {
 		// 침공 기록 검색
 		uint256[] memory invasionRecordIds = masterToInvasionRecordIds[msg.sender];
 		for (uint256 i = 0; i < invasionRecordIds.length; i += 1) {
-			uint256 _invasionRecordId = invasionRecordIds[i];
-			if (invasionRecords[_invasionRecordId].planetId == planetId) {
-				InvasionRecord storage invasionRecord = invasionRecords[_invasionRecordId];
+			if (invasionRecords[invasionRecordIds[i]].planetId == planetId) {
+				InvasionRecord storage invasionRecord = invasionRecords[invasionRecordIds[i]];
+				break;
 			}
         }
         
@@ -157,8 +157,7 @@ contract EtherShipMaster is PartOwnership {
 				master : msg.sender,
 				count : 1,
 				winCount : isWin == true ? 1 : 0,
-				loseCount : isWin != true ? 1 : 0,
-				messageIndex : uint8(random32(0, 10))
+				loseCount : isWin != true ? 1 : 0
 			})).sub(1);
 			masterToInvasionRecordIds[msg.sender].push(invasionRecordId);
         }
@@ -171,53 +170,39 @@ contract EtherShipMaster is PartOwnership {
         	} else {
         		invasionRecord.loseCount = invasionRecord.loseCount.add(1);
         	}
-        	invasionRecord.messageIndex = uint8(random32(0, 10));
         }
         
         // 승리했으면 해당 행성에서의 전리품을 얻습니다.
+        // 행성별로 전리품은 반드시 5개여야 합니다.
         
-        // 행성의 전리품이 하나 이상 있어야 합니다.
-        uint256 partCount = 0;
+		uint32 index = random32(1, 5);
+		
 		for (i = 0; i < partOrigins.length; i += 1) {
 			PartOrigin memory partOrigin = partOrigins[i];
 			if (partOrigin.planetId == planetId && partOrigin.level == 1) {
-				partCount += 1;
-			}
-        }
-        
-        if (partCount > 0) {
-			
-			// 전리품을 생성하여 지급합니다.
-			uint32 max;
-			if (partCount > 4294967295) {
-				max = 4294967295;
-			} else {
-				max = uint32(partCount);
-			}
-			uint32 index = random32(0, max);
-			
-			uint256 selectedPartOriginId;
-			for (i = 0; i < partOrigins.length; i += 1) {
-				partOrigin = partOrigins[i];
-				if (partOrigin.planetId == planetId && partOrigin.level == 1) {
-					planetId -= 1;
-					if (planetId == index) {
-						selectedPartOriginId = i;
-					}
+				index -= 1;
+				if (index == 0) {
+					
+					// 부품 데이터 생성
+					uint256 partId = parts.push(Part({
+						partOriginId : i,
+						planetId : partOrigin.planetId,
+						partLocation : partOrigin.partLocation,
+						name : partOrigin.name,
+						level : partOrigin.level,
+						power : partOrigin.power
+					})).sub(1);
+					
+					// msg.sender를 소유주로 등록
+					partIdToMaster[partId] = msg.sender;
+					partIdToPartIdsIndex[partId] = masterToPartIds[msg.sender].push(partId).sub(1);
+					
+					// 이벤트 발생
+					emit Transfer(0x0, msg.sender, partId);
+					
+					break;
 				}
-	        }
-			
-			// 부품 데이터 생성
-			uint256 partId = parts.push(Part({
-				partOriginId : selectedPartOriginId
-			})).sub(1);
-			
-			// msg.sender를 소유주로 등록
-			partIdToMaster[partId] = msg.sender;
-			partIdToPartIdsIndex[partId] = masterToPartIds[msg.sender].push(partId).sub(1);
-			
-			// 이벤트 발생
-			emit Transfer(0x0, msg.sender, partId);
+			}
         }
 	}
 	
@@ -228,19 +213,21 @@ contract EtherShipMaster is PartOwnership {
 		
 		uint256 power = getShipPower(masterToShipId[msg.sender]);
 		
-		uint256[] memory shipIds = new uint256[](ships.length);
+		uint256[] memory shipPowers = new uint256[](ships.length);
 		
 		for (uint256 i = 0; i < ships.length; i += 1) {
+			shipPowers[i] = getShipPower(i);
+		}
+		
+		uint256[] memory shipIds = new uint256[](ships.length);
+		
+		for (i = 0; i < ships.length; i += 1) {
 			
-			uint256 shipPower = getShipPower(i);
-			uint256 powerCompare = power < shipPower ? shipPower.sub(power) : power.sub(shipPower);
+			uint256 powerCompare = power < shipPowers[i] ? shipPowers[i].sub(power) : power.sub(shipPowers[i]);
 			
 			for (uint256 j = i; j > 0; j -= 1) {
 				
-				uint256 shipPower2 = getShipPower(shipIds[j - 1]);
-				uint256 powerCompare2 = power < shipPower2 ? shipPower2.sub(power) : power.sub(shipPower2);
-				
-				if (powerCompare < powerCompare2) {
+				if (powerCompare < (power < shipPowers[shipIds[j - 1]] ? shipPowers[shipIds[j - 1]].sub(power) : power.sub(shipPowers[shipIds[j - 1]]))) {
 					shipIds[j] = shipIds[j - 1];
 				} else {
 					break;
