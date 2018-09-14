@@ -10,6 +10,94 @@ contract EtherShipBase {
 	// 부품 합성의 가격 (초기 가격은 0.01 이더입니다.)
 	uint256 public partUpgradePrice = 0.01 ether;
 	
+	// 행성 정보
+	struct Planet {
+		
+		// 행성 이름
+		string name;
+		
+		// 행성 전투력
+		uint256 power;
+		
+		// 행성 인구 수
+		uint256 population;
+		
+		// 숨긴 행성인가?
+		bool isHidden;
+	}
+	
+	// 행성 정보 저장소
+	Planet[] public planets;
+	
+	function getPlanetCount() view public returns (uint256) {
+		return planets.length;
+	}
+	
+	// 행성 정보를 추가합니다.
+	function addPlanet(string name, uint256 power, uint256 population) onlyCompany public {
+		planets.push(Planet({
+			name : name,
+			power : power,
+			population : population,
+			isHidden : false
+		}));
+	}
+	
+	// 부품 원본 정보
+	struct PartOrigin {
+		
+		// 출신 행성 ID
+		uint256 planetId;
+		
+		// 부품 위치
+		uint8 partLocation;
+		
+		// 부품 이름
+		string name;
+		
+		// 부품 레벨
+		uint256 level;
+		
+		// 공격력
+		uint256 power;
+		
+		// 숨긴 부품 원본인가?
+		bool isHidden;
+	}
+	
+	// 부품 원본 정보 저장소
+	PartOrigin[] public partOrigins;
+	
+	function getPartOriginCount() view public returns (uint256) {
+		return partOrigins.length;
+	}
+	
+	// 부품 원본 정보를 추가합니다.
+	function addPartOrigin(uint256 planetId, uint8 partLocation, string name, uint256 level, uint256 power) onlyCompany public {
+		partOrigins.push(PartOrigin({
+			planetId : planetId,
+			partLocation : partLocation,
+			name : name,
+			level : level,
+			power : power,
+			isHidden : false
+		}));
+	}
+	
+	// 부품 정보
+	struct Part {
+		
+		// 부품 원본 ID
+		uint256 partOriginId;
+	}
+	
+	// 부품 정보 저장소
+	Part[] public parts;
+	
+	function getPartCount() view public returns (uint256) {
+		return parts.length;
+	}
+	
 	// 전함 정보
 	struct Ship {
 		
@@ -30,27 +118,10 @@ contract EtherShipBase {
 	}
 	
 	// 전함 정보 저장소
-	Ship[] internal ships;
+	Ship[] public ships;
 	
 	function getShipCount() view public returns (uint256) {
 		return ships.length;
-	}
-	
-	// 부품 정보
-	struct Part {
-		
-		// 부품 위치
-		uint8 partLocation;
-		
-		// 부품 타입
-		uint256 partType;
-	}
-	
-	// 부품 정보 저장소
-	Part[] internal parts;
-	
-	function getPartCount() view public returns (uint256) {
-		return parts.length;
 	}
 	
 	// 회사의 지갑 주소
@@ -71,6 +142,13 @@ contract EtherShipBase {
 	constructor() public {
 		// 계약 생성자를 초기 회사로 등록
 		company = msg.sender;
+		
+		// 기본 행성 정보 등록
+		addPlanet('EOS', 4, 1000000000);
+		addPlanet('TRON', 22, 100000000000);
+		addPlanet('Ripple', 39, 100000000000);
+		addPlanet('OmiseGO', 51, 140000000);
+		addPlanet('Qtum', 74, 100000000);
 	}
 	
 	// 서비스가 일시중지 상태인지

@@ -47,7 +47,8 @@ global.Home = CLASS({
 						style : {
 							paddingTop : 20,
 							fontSize : 50,
-							fontWeight : 'bold'
+							fontWeight : 'bold',
+							color : '#aac4ff'
 						},
 						c : MSG({
 							ko : '전함 관리'
@@ -74,7 +75,8 @@ global.Home = CLASS({
 						style : {
 							paddingTop : 20,
 							fontSize : 50,
-							fontWeight : 'bold'
+							fontWeight : 'bold',
+							color : '#aac4ff'
 						},
 						c : MSG({
 							ko : '행성 정벌'
@@ -102,7 +104,8 @@ global.Home = CLASS({
 						style : {
 							paddingTop : 20,
 							fontSize : 50,
-							fontWeight : 'bold'
+							fontWeight : 'bold',
+							color : '#aac4ff'
 						},
 						c : MSG({
 							ko : '전함 대전'
@@ -114,8 +117,25 @@ global.Home = CLASS({
 						}
 					}
 				})
+			}),
+			
+			SkyEngine.Node({
+				y : 650,
+				dom : P({
+					style : {
+						width : 1280,
+						fontSize : 40,
+						fontWeight : 'bold',
+						color : '#70798d',
+						textAlign : 'center'
+					},
+					c : 'Developed by BTNcafe in SKT Bloackchain Hackathon 2018'
+				})
 			})]
 		}).appendTo(SkyEngine.Screen);
+		
+		rootNode.setAlpha(0);
+		rootNode.fadeIn(2);
 		
 		inner.on('close', () => {
 			rootNode.remove();
