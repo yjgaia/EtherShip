@@ -10,7 +10,7 @@ global.WalletManager = OBJECT({
 			isEnable = true;
 			
 			// 계약 생성
-			global.ContractController.setContract(web3.eth.contract(global.ContractABI).at(global.ContractAddress));
+			//global.ContractController.setContract(web3.eth.contract(global.ContractABI).at(global.ContractAddress));
 		}
 		
 		// 지갑을 사용할 수 있는지 확인

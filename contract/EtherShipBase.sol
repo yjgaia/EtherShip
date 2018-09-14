@@ -13,20 +13,44 @@ contract EtherShipBase {
 	// 전함 정보
 	struct Ship {
 		
+		// 중앙
+		uint256 centerPartId;
+		
 		// 전방
-		uint256 frontPart;
+		uint256 frontPartId;
 		
 		// 후방
-		uint256 rearPart;
+		uint256 rearPartId;
 		
 		// 위
-		uint256 topPart;
+		uint256 topPartId;
 		
 		// 아래
-		uint256 bottomPart;
+		uint256 bottomPartId;
+	}
+	
+	// 전함 정보 저장소
+	Ship[] internal ships;
+	
+	function getShipCount() view public returns (uint256) {
+		return ships.length;
+	}
+	
+	// 부품 정보
+	struct Part {
 		
-		// 중앙
-		uint256 centerPart;
+		// 부품 위치
+		uint8 partLocation;
+		
+		// 부품 타입
+		uint256 partType;
+	}
+	
+	// 부품 정보 저장소
+	Part[] internal parts;
+	
+	function getPartCount() view public returns (uint256) {
+		return parts.length;
 	}
 	
 	// 회사의 지갑 주소

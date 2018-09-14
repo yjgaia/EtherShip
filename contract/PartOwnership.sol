@@ -1,12 +1,12 @@
 pragma solidity ^0.4.24;
 
-import "./EtherShipBase.sol";
+import "./EtherShipMaster.sol";
 import "./ERC/ERC721.sol";
 import "./ERC/ERC721TokenReceiver.sol";
 import "./Util/SafeMath.sol";
 
 // 부품 소유권 관련 기능
-contract PartOwnership is EtherShipBase, ERC721 {
+contract PartOwnership is EtherShipMaster, ERC721 {
 	using SafeMath for uint256;
 	
 	// 부품의 소유주 정보
@@ -107,6 +107,40 @@ contract PartOwnership is EtherShipBase, ERC721 {
 		// 부품 이전
 		partIdToMaster[partId] = to;
 		partIdToPartIdsIndex[partId] = masterToPartIds[to].push(partId).sub(1);
+		
+		// 장착중인 부품 떼기
+		uint256 shipId = masterToShipId[from];
+		if (checkAddressMisused(shipIdToMaster[shipId]) != true) {
+			
+			uint8 partLocation = parts[partId].partLocation;
+			
+			Ship storage ship = ships[shipId];
+			
+			// center
+			if (partLocation == 0 && ship.centerPartId == partId) {
+				ship.centerPartId = 0;
+			}
+			
+			// front
+			if (partLocation == 1 && ship.frontPartId == partId) {
+				ship.frontPartId = 0;
+			}
+			
+			// rear
+			if (partLocation == 2 && ship.rearPartId == partId) {
+				ship.rearPartId = 0;
+			}
+			
+			// top
+			if (partLocation == 3 && ship.topPartId == partId) {
+				ship.topPartId = 0;
+			}
+			
+			// bottom
+			if (partLocation == 4 && ship.bottomPartId == partId) {
+				ship.bottomPartId = 0;
+			}
+		}
 		
 		emit Transfer(from, to, partId);
 	}

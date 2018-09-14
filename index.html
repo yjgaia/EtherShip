@@ -19,12 +19,20 @@
             <p style="padding:15px;">JavaScript is disabled. Please enable JavaScript in your browser.</p>
         </noscript>
 		<script src="/js/UPPERCASE-CORE/BROWSER.js"></script>
+		<script src="/js/override.js"></script>
 		<script>BOX('SkyEngine');</script>
 		<script src="/js/SkyEngine/BROWSER.js"></script>
 		<script>BOX('UUI');</script>
 		<script src="/js/UUI/BROWSER.js"></script>
-		<!-- 개발 모드 -->
-		<script>CONFIG.isDevMode = true;</script>
+		<!-- 설정 -->
+		<script>
+			CONFIG.isDevMode = true;
+			BROWSER_CONFIG.SkyEngine = {
+				isDebugMode : true,
+				width : 1280 * 2,
+				height : 720 * 2
+			};
+		</script>
 		<script src="/js/ContractAddress.js"></script>
 		<script src="/js/ContractABI.js"></script>
 		<script src="/js/ContractController.js"></script>
