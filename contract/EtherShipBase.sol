@@ -7,6 +7,9 @@ contract EtherShipBase {
 	string constant public NAME = "EtherShip";
 	string constant public SYMBOL = "SHIP";
 	
+	// 부품 합성의 가격 (초기 가격은 0.01 이더입니다.)
+	uint256 public partUpgradePrice = 0.01 ether;
+	
 	// 전함 정보
 	struct Ship {
 		
