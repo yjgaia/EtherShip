@@ -49,4 +49,9 @@ RUN(() => {
 		uri : 'battlepresentation/{transactionAddress}',
 		target : BattlePresentation
 	});
+	
+	MATCH_VIEW({
+		uri : 'battlewin',
+		target : BattleWin
+	});
 });

@@ -321,5 +321,10 @@ global.ContractController = OBJECT({
 		let assembleShip = self.assembleShip = func((centerPartId, frontPartId, rearPartId, topPartId, bottomPartId, callback) => {
 			contract.assembleShip(centerPartId, frontPartId, rearPartId, topPartId, bottomPartId, transactionCallbackWrapper(callback));
 		});
+		
+		// 다른 전함과 대전합니다.
+		let battle = self.battle = func((callback) => {
+			contract.battle(transactionCallbackWrapper(callback));
+		});
 	}
 });

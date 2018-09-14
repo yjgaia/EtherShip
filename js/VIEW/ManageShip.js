@@ -7,7 +7,8 @@ global.ManageShip = CLASS({
 	init : (inner, self) => {
 		
 		let bgm = SkyEngine.BGM({
-			mp3 : '/resource/bgm/shipmanage.mp3'
+			ogg : '/resource/bgm/ship_manage.ogg',
+			mp3 : '/resource/bgm/ship_manage.mp3'
 		});
 		bgm.play();
 		

@@ -62,35 +62,37 @@ global.Ship = CLASS({
 					ContractController.getShipInfo(shipId, (shipInfo) => {
 						
 						// center
-						ContractController.getPartInfo(shipInfo[0], (partInfo) => {
-							
-							let partName = partInfo[3];
-							
-							if (partInfo[2] === 0) {
+						if (shipInfo[0] === 0) {
+							self.append(ShipImage({
+								zIndex : 5,
+								centerX : PartImagePositions['ETR-001'].x,
+								centerY : PartImagePositions['ETR-001'].y,
+								src : '/resource/part/0/ETR-001.png'
+							}));
+						} else {
+							ContractController.getPartInfo(shipInfo[0], (partInfo) => {
+								let partName = partInfo[3];
 								self.append(ShipImage({
 									zIndex : 5,
 									centerX : PartImagePositions[partName].x,
 									centerY : PartImagePositions[partName].y,
 									src : '/resource/part/0/' + partName + '.png'
 								}));
-							}
-							
-							else {
-								self.append(ShipImage({
-									zIndex : 5,
-									centerX : PartImagePositions['ETR-001'].x,
-									centerY : PartImagePositions['ETR-001'].y,
-									src : '/resource/part/0/ETR-001.png'
-								}));
-							}
-						});
+							});
+						}
 						
 						// front
-						ContractController.getPartInfo(shipInfo[1], (partInfo) => {
-							
-							let partName = partInfo[3];
-							
-							if (partInfo[2] === 1) {
+						if (shipInfo[1] === 0) {
+							self.append(ShipImage({
+								zIndex : 3,
+								x : 50,
+								centerX : PartImagePositions['ETR-003'].x,
+								centerY : PartImagePositions['ETR-003'].y,
+								src : '/resource/part/1/ETR-003.png'
+							}));
+						} else {
+							ContractController.getPartInfo(shipInfo[1], (partInfo) => {
+								let partName = partInfo[3];
 								self.append(ShipImage({
 									zIndex : 3,
 									x : 50,
@@ -98,25 +100,21 @@ global.Ship = CLASS({
 									centerY : PartImagePositions[partName].y,
 									src : '/resource/part/1/' + partName + '.png'
 								}));
-							}
-							
-							else {
-								self.append(ShipImage({
-									zIndex : 3,
-									x : 50,
-									centerX : PartImagePositions['ETR-003'].x,
-									centerY : PartImagePositions['ETR-003'].y,
-									src : '/resource/part/1/ETR-003.png'
-								}));
-							}
-						});
+							});
+						}
 						
 						// rear
-						ContractController.getPartInfo(shipInfo[2], (partInfo) => {
-							
-							let partName = partInfo[3];
-							
-							if (partInfo[2] === 2) {
+						if (shipInfo[2] === 0) {
+							self.append(ShipImage({
+								zIndex : 4,
+								x : -50,
+								centerX : PartImagePositions['ETR-002'].x,
+								centerY : PartImagePositions['ETR-002'].y,
+								src : '/resource/part/2/ETR-002.png'
+							}));
+						} else {
+							ContractController.getPartInfo(shipInfo[2], (partInfo) => {
+								let partName = partInfo[3];
 								self.append(ShipImage({
 									zIndex : 4,
 									x : -50,
@@ -124,25 +122,21 @@ global.Ship = CLASS({
 									centerY : PartImagePositions[partName].y,
 									src : '/resource/part/2/' + partName + '.png'
 								}));
-							}
-							
-							else {
-								self.append(ShipImage({
-									zIndex : 4,
-									x : -50,
-									centerX : PartImagePositions['ETR-002'].x,
-									centerY : PartImagePositions['ETR-002'].y,
-									src : '/resource/part/2/ETR-002.png'
-								}));
-							}
-						});
+							});
+						}
 						
 						// top
-						ContractController.getPartInfo(shipInfo[3], (partInfo) => {
-							
-							let partName = partInfo[3];
-							
-							if (partInfo[2] === 3) {
+						if (shipInfo[3] === 0) {
+							self.append(ShipImage({
+								zIndex : 2,
+								y : -50,
+								centerX : PartImagePositions['ETR-004'].x,
+								centerY : PartImagePositions['ETR-004'].y,
+								src : '/resource/part/3/ETR-004.png'
+							}));
+						} else {
+							ContractController.getPartInfo(shipInfo[3], (partInfo) => {
+								let partName = partInfo[3];
 								self.append(ShipImage({
 									zIndex : 2,
 									y : -50,
@@ -150,25 +144,21 @@ global.Ship = CLASS({
 									centerY : PartImagePositions[partName].y,
 									src : '/resource/part/3/' + partName + '.png'
 								}));
-							}
-							
-							else {
-								self.append(ShipImage({
-									zIndex : 2,
-									y : -50,
-									centerX : PartImagePositions['ETR-004'].x,
-									centerY : PartImagePositions['ETR-004'].y,
-									src : '/resource/part/3/ETR-004.png'
-								}));
-							}
-						});
+							});
+						}
 						
 						// bottom
-						ContractController.getPartInfo(shipInfo[4], (partInfo) => {
-							
-							let partName = partInfo[3];
-							
-							if (partInfo[2] === 4) {
+						if (shipInfo[4] === 0) {
+							self.append(ShipImage({
+								zIndex : 1,
+								y : 50,
+								centerX : PartImagePositions['ETR-005'].x,
+								centerY : PartImagePositions['ETR-005'].y,
+								src : '/resource/part/4/ETR-005.png'
+							}));
+						} else {
+							ContractController.getPartInfo(shipInfo[4], (partInfo) => {
+								let partName = partInfo[3];
 								self.append(ShipImage({
 									zIndex : 1,
 									y : 50,
@@ -176,18 +166,8 @@ global.Ship = CLASS({
 									centerY : PartImagePositions[partName].y,
 									src : '/resource/part/4/' + partName + '.png'
 								}));
-							}
-							
-							else {
-								self.append(ShipImage({
-									zIndex : 1,
-									y : 50,
-									centerX : PartImagePositions['ETR-005'].x,
-									centerY : PartImagePositions['ETR-005'].y,
-									src : '/resource/part/4/ETR-005.png'
-								}));
-							}
-						});
+							});
+						}
 					});
 				}
 			});

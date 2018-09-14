@@ -7,7 +7,8 @@ global.InvadePlanetPresentation = CLASS({
 	init : (inner, self) => {
 		
 		let bgm = SkyEngine.BGM({
-			mp3 : '/resource/bgm/attackplanet.mp3'
+			ogg : '/resource/bgm/attack_planet.ogg',
+			mp3 : '/resource/bgm/attack_planet.mp3'
 		});
 		bgm.play();
 		
@@ -141,6 +142,9 @@ global.InvadePlanetPresentation = CLASS({
 			ContractController.setTransactionCallback(transactionAddress, () => {
 				GO('invadeplanetwin/' + planetId);
 			});
+			
+			rootNode.setAlpha(0);
+			rootNode.fadeIn(2);
 		});
 		
 		inner.on('close', () => {

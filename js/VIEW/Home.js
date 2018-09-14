@@ -7,7 +7,8 @@ global.Home = CLASS({
 	init : (inner, self) => {
 		
 		let bgm = SkyEngine.BGM({
-			mp3 : '/resource/bgm/theme.mp3'
+			ogg : '/resource/bgm/mainmenu.ogg',
+			mp3 : '/resource/bgm/mainmenu.mp3'
 		});
 		bgm.play();
 		

@@ -230,30 +230,54 @@ contract EtherShipMaster is PartOwnership {
 		
 		// 내 전함과의 공격력 차이가 작은 순서대로 전함들을 가져옵니다.
 		
-		uint256 power = getShipPower(masterToShipId[msg.sender]);
+		uint256 shipId = masterToShipId[msg.sender];
+		uint256 power = getShipPower(shipId);
 		
-		uint256[] memory shipPowers = new uint256[](ships.length);
+		uint256[] memory shipPowers = new uint256[](ships.length - 1);
 		
-		for (uint256 i = 0; i < ships.length; i += 1) {
-			shipPowers[i] = getShipPower(i);
+		for (uint256 i = 0; i < ships.length - 1; i += 1) {
+			if (shipId <= i) {
+				shipPowers[i + 1] = getShipPower(i + 1);
+			} else {
+				shipPowers[i] = getShipPower(i);
+			}
 		}
 		
-		uint256[] memory shipIds = new uint256[](ships.length);
+		uint256[] memory shipIds = new uint256[](ships.length - 1);
 		
-		for (i = 0; i < ships.length; i += 1) {
+		for (i = 0; i < ships.length - 1; i += 1) {
 			
-			uint256 powerCompare = power < shipPowers[i] ? shipPowers[i].sub(power) : power.sub(shipPowers[i]);
-			
-			for (uint256 j = i; j > 0; j -= 1) {
+			if (shipId <= i) {
 				
-				if (powerCompare < (power < shipPowers[shipIds[j - 1]] ? shipPowers[shipIds[j - 1]].sub(power) : power.sub(shipPowers[shipIds[j - 1]]))) {
-					shipIds[j] = shipIds[j - 1];
-				} else {
-					break;
+				uint256 powerCompare = power < shipPowers[i + 1] ? shipPowers[i + 1].sub(power) : power.sub(shipPowers[i + 1]);
+				
+				for (uint256 j = i + 1; j > 0; j -= 1) {
+					
+					if (powerCompare < (power < shipPowers[shipIds[j - 1]] ? shipPowers[shipIds[j - 1]].sub(power) : power.sub(shipPowers[shipIds[j - 1]]))) {
+						shipIds[j] = shipIds[j - 1];
+					} else {
+						break;
+					}
 				}
+				
+				shipIds[j] = i + 1;
 			}
 			
-			shipIds[j] = i;
+			else {
+				
+				powerCompare = power < shipPowers[i] ? shipPowers[i].sub(power) : power.sub(shipPowers[i]);
+				
+				for (j = i; j > 0; j -= 1) {
+					
+					if (powerCompare < (power < shipPowers[shipIds[j - 1]] ? shipPowers[shipIds[j - 1]].sub(power) : power.sub(shipPowers[shipIds[j - 1]]))) {
+						shipIds[j] = shipIds[j - 1];
+					} else {
+						break;
+					}
+				}
+				
+				shipIds[j] = i;
+			}
 		}
 		
 		// 차이가 가장 덜 나는 10명 중 한명과 전투를 벌입니다.

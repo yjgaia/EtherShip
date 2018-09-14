@@ -35,10 +35,10 @@ contract EtherShip is EtherShipCompany, EtherShipMaster, PartMarket, ERC165 {
 		
 		// 기본 행성 정보 등록
 		addPlanet("EOS", 4, 1000000000);
-		addPlanet("TRON", 22, 100000000000);
-		addPlanet("Ripple", 39, 100000000000);
 		
 		//TODO: 나머지 행성들의 정보도 추가해줘야합니다.
+		//addPlanet("TRON", 22, 100000000000);
+		//addPlanet("Ripple", 39, 100000000000);
 		//addPlanet("OmiseGO", 51, 140000000);
 		//addPlanet("Qtum", 74, 100000000);
 		

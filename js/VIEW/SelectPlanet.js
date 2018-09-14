@@ -7,7 +7,8 @@ global.SelectPlanet = CLASS({
 	init : (inner, self) => {
 		
 		let bgm = SkyEngine.BGM({
-			mp3 : '/resource/bgm/planetselect.mp3'
+			ogg : '/resource/bgm/planets.ogg',
+			mp3 : '/resource/bgm/planets.mp3'
 		});
 		bgm.play();
 		

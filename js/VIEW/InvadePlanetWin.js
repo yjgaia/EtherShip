@@ -7,6 +7,7 @@ global.InvadePlanetWin = CLASS({
 	init : (inner, self) => {
 		
 		let bgm = SkyEngine.BGM({
+			ogg : '/resource/bgm/win.ogg',
 			mp3 : '/resource/bgm/win.mp3'
 		});
 		bgm.play();
@@ -127,6 +128,9 @@ global.InvadePlanetWin = CLASS({
 					}));
 				});
 			});
+			
+			rootNode.setAlpha(0);
+			rootNode.fadeIn(2);
 		});
 		
 		inner.on('close', () => {
