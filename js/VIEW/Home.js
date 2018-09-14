@@ -6,6 +6,11 @@ global.Home = CLASS({
 	
 	init : (inner, self) => {
 		
+		let bgm = SkyEngine.BGM({
+			mp3 : '/resource/bgm/theme.mp3'
+		});
+		bgm.play();
+		
 		let rootNode = SkyEngine.Node({
 			c : [
 			
@@ -56,6 +61,12 @@ global.Home = CLASS({
 					}),
 					on : {
 						tap : () => {
+							
+							SOUND_ONCE({
+								ogg : '/resource/sound/mainbutton.ogg',
+								mp3 : '/resource/sound/mainbutton.mp3'
+							});
+							
 							GO('manageship');
 						}
 					}
@@ -84,6 +95,12 @@ global.Home = CLASS({
 					}),
 					on : {
 						tap : () => {
+							
+							SOUND_ONCE({
+								ogg : '/resource/sound/mainbutton.ogg',
+								mp3 : '/resource/sound/mainbutton.mp3'
+							});
+							
 							GO('selectplanet');
 						}
 					}
@@ -113,6 +130,12 @@ global.Home = CLASS({
 					}),
 					on : {
 						tap : () => {
+							
+							SOUND_ONCE({
+								ogg : '/resource/sound/mainbutton.ogg',
+								mp3 : '/resource/sound/mainbutton.mp3'
+							});
+							
 							GO('battle');
 						}
 					}
@@ -138,6 +161,10 @@ global.Home = CLASS({
 		rootNode.fadeIn(2);
 		
 		inner.on('close', () => {
+			
+			bgm.stop();
+			bgm = undefined;
+			
 			rootNode.remove();
 		});
 	}

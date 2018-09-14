@@ -6,6 +6,11 @@ global.SelectPlanet = CLASS({
 	
 	init : (inner, self) => {
 		
+		let bgm = SkyEngine.BGM({
+			mp3 : '/resource/bgm/planetselect.mp3'
+		});
+		bgm.play();
+		
 		let rootNode = SkyEngine.Node({
 			c : [
 			
@@ -14,6 +19,7 @@ global.SelectPlanet = CLASS({
 				src : '/resource/ui/background.png'
 			}),
 			
+			// 뒤로가기
 			SkyEngine.Node({
 				x : -1215,
 				y : -670,
@@ -23,12 +29,19 @@ global.SelectPlanet = CLASS({
 					}),
 					on : {
 						tap : () => {
+							
+							SOUND_ONCE({
+								ogg : '/resource/sound/backbutton.ogg',
+								mp3 : '/resource/sound/backbutton.mp3'
+							});
+							
 							GO('');
 						}
 					}
 				})
 			}),
 			
+			// 타이틀
 			SkyEngine.Node({
 				y : -660,
 				dom : H2({
@@ -43,12 +56,10 @@ global.SelectPlanet = CLASS({
 					})
 				})
 			}),
-			
 			SkyEngine.Image({
 				y : -600,
 				src : '/resource/ui/titlebar.png'
 			}),
-			
 			SkyEngine.Node({
 				y : -600,
 				dom : P({
@@ -83,6 +94,12 @@ global.SelectPlanet = CLASS({
 					}),
 					on : {
 						tap : () => {
+							
+							SOUND_ONCE({
+								ogg : '/resource/sound/selectplanet.ogg',
+								mp3 : '/resource/sound/selectplanet.mp3'
+							});
+							
 							GO('planet/0');
 						}
 					}
@@ -107,6 +124,12 @@ global.SelectPlanet = CLASS({
 					}),
 					on : {
 						tap : () => {
+							
+							SOUND_ONCE({
+								ogg : '/resource/sound/selectplanet.ogg',
+								mp3 : '/resource/sound/selectplanet.mp3'
+							});
+							
 							GO('planet/1');
 						}
 					}
@@ -131,6 +154,12 @@ global.SelectPlanet = CLASS({
 					}),
 					on : {
 						tap : () => {
+							
+							SOUND_ONCE({
+								ogg : '/resource/sound/selectplanet.ogg',
+								mp3 : '/resource/sound/selectplanet.mp3'
+							});
+							
 							GO('planet/2');
 						}
 					}
@@ -155,6 +184,12 @@ global.SelectPlanet = CLASS({
 					}),
 					on : {
 						tap : () => {
+							
+							SOUND_ONCE({
+								ogg : '/resource/sound/selectplanet.ogg',
+								mp3 : '/resource/sound/selectplanet.mp3'
+							});
+							
 							GO('planet/3');
 						}
 					}
@@ -179,6 +214,12 @@ global.SelectPlanet = CLASS({
 					}),
 					on : {
 						tap : () => {
+							
+							SOUND_ONCE({
+								ogg : '/resource/sound/selectplanet.ogg',
+								mp3 : '/resource/sound/selectplanet.mp3'
+							});
+							
 							GO('planet/4');
 						}
 					}
@@ -190,6 +231,10 @@ global.SelectPlanet = CLASS({
 		rootNode.fadeIn(2);
 		
 		inner.on('close', () => {
+			
+			bgm.stop();
+			bgm = undefined;
+			
 			rootNode.remove();
 		});
 	}

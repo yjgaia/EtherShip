@@ -8,17 +8,39 @@ import "./ERC/ERC165.sol";
 // EtherShip 스마트 계약
 contract EtherShip is EtherShipCompany, EtherShipMaster, PartMarket, ERC165 {
 	
+	//TODO: 계약 생성 이후 이 함수를 실행해줘야 합니다.
+	function initMersenneTwister32() onlyCompany public {
+		mersenneTwister32 = new MersenneTwister32();
+	}
+	
+	//TODO: initMersenneTwister32 이후 이 함수를 실행해줘야 합니다.
+	function seedMersenneTwister32(uint32 seed) onlyCompany public {
+		mersenneTwister32.seedMT(seed);
+	}
+	
 	constructor() public {
 		
 		// 계약 생성자를 초기 회사로 등록
 		company = msg.sender;
 		
+		// part 0번은 사용하지 않습니다.
+		parts.push(Part({
+			partOriginId : 0,
+			planetId : 0,
+			partLocation : 0,
+			name : "",
+			level : 0,
+			power : 0
+		}));
+		
 		// 기본 행성 정보 등록
 		addPlanet("EOS", 4, 1000000000);
 		addPlanet("TRON", 22, 100000000000);
 		addPlanet("Ripple", 39, 100000000000);
-		addPlanet("OmiseGO", 51, 140000000);
-		addPlanet("Qtum", 74, 100000000);
+		
+		//TODO: 나머지 행성들의 정보도 추가해줘야합니다.
+		//addPlanet("OmiseGO", 51, 140000000);
+		//addPlanet("Qtum", 74, 100000000);
 		
 		// EOS 무기 추가
 		addPartOrigin(0, 0, "STD-N010M", 1, 2);
@@ -108,16 +130,6 @@ contract EtherShip is EtherShipCompany, EtherShipMaster, PartMarket, ERC165 {
 		addPartOrigin(4, 3, "FTT-001", 3, 26);
 		addPartOrigin(4, 4, "ISTD-001", 3, 30);
 		*/
-	}
-	
-	//TODO: 계약 생성 이후 이 함수를 실행해줘야 합니다.
-	function initMersenneTwister32() onlyCompany public {
-		mersenneTwister32 = new MersenneTwister32();
-	}
-	
-	//TODO: initMersenneTwister32 이후 이 함수를 실행해줘야 합니다.
-	function seedMersenneTwister32(uint32 seed) onlyCompany public {
-		mersenneTwister32.seedMT(seed);
 	}
 	
 	//ERC165: 주어진 인터페이스가 구현되어 있는지 확인합니다.

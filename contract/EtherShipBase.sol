@@ -90,6 +90,32 @@ contract EtherShipBase {
 		}));
 	}
 	
+	// 행성에서 얻을 수 있는 부품 원본 ID 목록을 가져옵니다.
+	function getPlanetPartOriginIds(uint256 planetId) view public returns (uint256[]) {
+		
+		uint256 count = 0;
+		
+		for (uint256 i = 0; i < partOrigins.length; i += 1) {
+			PartOrigin memory partOrigin = partOrigins[i];
+			if (partOrigin.planetId == planetId) {
+				count = count.add(1);
+			}
+        }
+        
+		uint256[] memory partOriginIds = new uint256[](count);
+		uint256 index = 0;
+		
+		for (i = 0; i < partOrigins.length; i += 1) {
+			partOrigin = partOrigins[i];
+			if (partOrigin.planetId == planetId) {
+				partOriginIds[index] = i;
+				index = index.add(1);
+			}
+        }
+        
+        return partOriginIds;
+	}
+	
 	// 부품 정보
 	struct Part {
 		
@@ -170,11 +196,11 @@ contract EtherShipBase {
 			
 			// 총 공격력 계산
 			power = power
-				.add(parts[ship.centerPartId].power)
-				.add(parts[ship.frontPartId].power)
-				.add(parts[ship.rearPartId].power)
-				.add(parts[ship.topPartId].power)
-				.add(parts[ship.bottomPartId].power);
+				.add(ship.centerPartId == 0 ? 1 : parts[ship.centerPartId].power)
+				.add(ship.frontPartId == 0 ? 1 : parts[ship.frontPartId].power)
+				.add(ship.rearPartId == 0 ? 1 : parts[ship.rearPartId].power)
+				.add(ship.topPartId == 0 ? 1 : parts[ship.topPartId].power)
+				.add(ship.bottomPartId == 0 ? 1 : parts[ship.bottomPartId].power);
 		}
 		
 		return power;

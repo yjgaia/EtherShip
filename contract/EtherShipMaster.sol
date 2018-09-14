@@ -9,16 +9,35 @@ contract EtherShipMaster is PartOwnership {
 	function assembleShip(uint256 centerPartId, uint256 frontPartId, uint256 rearPartId, uint256 topPartId, uint256 bottomPartId) public {
 		
 		// 모든 부품들을 소유하고 있어야 합니다.
-		require(ownerOf(centerPartId) == msg.sender);
-		require(ownerOf(frontPartId) == msg.sender);
-		require(ownerOf(rearPartId) == msg.sender);
-		require(ownerOf(topPartId) == msg.sender);
-		require(ownerOf(bottomPartId) == msg.sender);
+		if (centerPartId != 0) {
+			require(ownerOf(centerPartId) == msg.sender);
+			require(parts[centerPartId].partLocation == 0);
+		}
+		
+		if (frontPartId != 0) {
+			require(ownerOf(frontPartId) == msg.sender);
+			require(parts[frontPartId].partLocation == 1);
+		}
+		
+		if (rearPartId != 0) {
+			require(ownerOf(rearPartId) == msg.sender);
+			require(parts[rearPartId].partLocation == 2);
+		}
+		
+		if (topPartId != 0) {
+			require(ownerOf(topPartId) == msg.sender);
+			require(parts[topPartId].partLocation == 3);
+		}
+		
+		if (bottomPartId != 0) {
+			require(ownerOf(bottomPartId) == msg.sender);
+			require(parts[bottomPartId].partLocation == 4);
+		}
 		
 		uint256 shipId = masterToShipId[msg.sender];
 		
 		// 소유하고 있는 전함이 없으면 생성
-		if (checkAddressMisused(shipIdToMaster[shipId]) == true) {
+		if (checkAddressMisused(shipIdToMaster[shipId]) == true || shipIdToMaster[shipId] != msg.sender) {
 			
 			// 전함 데이터 생성
 			shipId = ships.push(Ship({

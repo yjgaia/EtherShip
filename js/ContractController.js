@@ -122,12 +122,14 @@ global.ContractController = OBJECT({
 			
 			let callback;
 			let errorHandler;
+			let transactionHandler;
 			
 			if (CHECK_IS_DATA(callbackOrHandlers) !== true) {
 				callback = callbackOrHandlers;
 			} else {
 				callback = callbackOrHandlers.success;
 				errorHandler = callbackOrHandlers.error;
+				transactionHandler = callbackOrHandlers.transaction;
 			}
 			
 			return (error, result) => {
@@ -144,31 +146,9 @@ global.ContractController = OBJECT({
 				// 정상 작동
 				else {
 					
-					UUI.ALERT({
-						style : {
-							backgroundColor : '#fff',
-							color : '#000',
-							padding : 10,
-							border : '1px solid #ccc'
-						},
-						buttonStyle : {
-							marginTop : 10,
-							padding : 10,
-							border : '1px solid #ccc',
-							borderRadius : 5
-						},
-						msg : [P({
-							c : '트랜잭션이 진행중입니다.'
-						}), A({
-							style : {
-								color : '#3366CC',
-								fontWeight : 'bold'
-							},
-							target : '_blank',
-							href : 'https://etherscan.io/tx/' + result,
-							c : 'EtherScan에서 보기'
-						})]
-					});
+					if (transactionHandler !== undefined) {
+						transactionHandler(result);
+					}
 					
 					if (callback !== undefined) {
 						
@@ -199,6 +179,44 @@ global.ContractController = OBJECT({
 					}
 				}
 			};
+		};
+		
+		let setTransactionCallback = self.setTransactionCallback = (transactionAddress, callbackOrHandlers) => {
+			
+			let callback;
+			let errorHandler;
+			
+			if (CHECK_IS_DATA(callbackOrHandlers) !== true) {
+				callback = callbackOrHandlers;
+			} else {
+				callback = callbackOrHandlers.success;
+				errorHandler = callbackOrHandlers.error;
+			}
+			
+			let retry = RAR(() => {
+				
+				web3.eth.getTransactionReceipt(transactionAddress, (error, result) => {
+					
+					// 트랜잭선 오류 발생
+					if (error !== TO_DELETE) {
+						if (errorHandler !== undefined) {
+							errorHandler(error.toString());
+						} else {
+							alert(error.toString());
+						}
+					}
+					
+					// 아무런 값이 없으면 재시도
+					else if (result === TO_DELETE) {
+						retry();
+					}
+					
+					// 트랜잭션 완료
+					else {
+						callback();
+					}
+				});
+			});
 		};
 		
 		let on = self.on = (eventName, eventHandler) => {
@@ -232,6 +250,76 @@ global.ContractController = OBJECT({
 			}
 		};
 		
+		let name = self.name = func((callback) => {
+			contract.name(callbackWrapper(callback));
+		});
 		
+		let symbol = self.symbol = func((callback) => {
+			contract.symbol(callbackWrapper(callback));
+		});
+		
+		// 행성 정보를 반환합니다.
+		let getPlanetInfo = self.getPlanetInfo = func((planetId, callback) => {
+			contract.planets(planetId, callbackWrapper(callback));
+		});
+		
+		// 행성의 전리품 목록을 반환합니다.
+		let getPlanetPartOriginIds = self.getPlanetPartOriginIds = func((planetId, callback) => {
+			contract.getPlanetPartOriginIds(planetId, callbackWrapper(callback));
+		});
+		
+		// 부품 원본 정보를 반환합니다.
+		let getPartOriginInfo = self.getPartOriginInfo = func((partOriginId, callback) => {
+			contract.partOrigins(partOriginId, callbackWrapper(callback));
+		});
+		
+		// 행성을 정벌합니다.
+		let invadePlanet = self.invadePlanet = func((planetId, callback) => {
+			contract.invadePlanet(planetId, transactionCallbackWrapper(callback));
+		});
+		
+		// 내 부품 ID 개수를 불러옵니다.
+		let getMyPartCount = self.getMyPartCount = func((callback) => {
+			WalletManager.getWalletAddress((walletAddress) => {
+				contract.balanceOf(walletAddress, callbackWrapper(callback));
+			});
+		});
+		
+		// 내 부품 ID를 불러옵니다.
+		let getMyPartId = self.getMyPartId = func((index, callback) => {
+			WalletManager.getWalletAddress((walletAddress) => {
+				contract.masterToPartIds(walletAddress, index, callbackWrapper(callback));
+			});
+		});
+		
+		// 특정 유저의 전함의 ID를 불러옵니다.
+		let getShipId = self.getShipId = func((walletAddress, callback) => {
+			contract.masterToShipId(walletAddress, callbackWrapper(callback));
+		});
+		
+		// 전함의 주인을 불러옵니다.
+		let getMasterByShipId = self.getMasterByShipId = func((shipId, callback) => {
+			contract.shipIdToMaster(shipId, callbackWrapper(callback));
+		});
+		
+		// 전함의 정보를 불러옵니다.
+		let getShipInfo = self.getShipInfo = func((shipId, callback) => {
+			contract.ships(shipId, callbackWrapper(callback));
+		});
+		
+		// 부품의 정보를 불러옵니다.
+		let getPartInfo = self.getPartInfo = func((partId, callback) => {
+			contract.parts(partId, callbackWrapper(callback));
+		});
+		
+		// 전함의 공격력을 불러옵니다.
+		let getShipPower = self.getShipPower = func((shipId, callback) => {
+			contract.getShipPower(shipId, callbackWrapper(callback));
+		});
+		
+		// 전함을 조립합니다.
+		let assembleShip = self.assembleShip = func((centerPartId, frontPartId, rearPartId, topPartId, bottomPartId, callback) => {
+			contract.assembleShip(centerPartId, frontPartId, rearPartId, topPartId, bottomPartId, transactionCallbackWrapper(callback));
+		});
 	}
 });

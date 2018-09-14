@@ -5,4 +5,4 @@ global.ContractAddress = CONFIG.isDevMode !== true ?
 
 // 개발 모드
 // Kovan
-'0x8451681450df038df938dbbc4f4ffb1bb98a8b80';
+'0xaa87de6a199fc0981dd70bf06c2f327c0db08f82';

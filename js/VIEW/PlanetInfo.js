@@ -12,12 +12,12 @@ global.PlanetInfo = CLASS({
 			
 			let planetId = params.planetId;
 			
-			console.log(planetId);
-			
 			if (rootNode !== undefined) {
 				rootNode.remove();
 			}
 			
+			let namePanel;
+			let partOriginList;
 			rootNode = SkyEngine.Node({
 				c : [
 				SkyEngine.Node({
@@ -38,6 +38,12 @@ global.PlanetInfo = CLASS({
 						}),
 						on : {
 							tap : () => {
+								
+								SOUND_ONCE({
+									ogg : '/resource/sound/backbutton.ogg',
+									mp3 : '/resource/sound/backbutton.mp3'
+								});
+								
 								GO('selectplanet');
 							}
 						}
@@ -69,13 +75,12 @@ global.PlanetInfo = CLASS({
 									src : '/resource/ui/' + planetId + '.png'
 								}),
 								spacing : 20,
-								title : H4({
+								title : namePanel = H4({
 									style : {
 										fontSize : 40,
 										fontWeight : 'bold',
 										color : '#fff0e6'
-									},
-									c : 'Ripple'
+									}
 								})
 							})
 						}), P({
@@ -116,6 +121,23 @@ global.PlanetInfo = CLASS({
 							c : MSG({
 								ko : '약탈할 수 있는 부품 목록'
 							})
+						}), partOriginList = DIV({
+							style : {
+								position : 'absolute',
+								left : 0,
+								bottom : 120
+							},
+							c : DIV({
+								style : {
+									padding : 30,
+									fontSize : 35,
+									fontWeight : 'bold',
+									color : '#fff0e6'
+								},
+								c : MSG({
+									ko : '목록을 불러오는 중입니다.'
+								})
+							})
 						}), UUI.V_CENTER({
 							style : {
 								position : 'absolute',
@@ -135,7 +157,12 @@ global.PlanetInfo = CLASS({
 							}),
 							on : {
 								tap : () => {
-									//TODO:
+									
+									ContractController.invadePlanet(planetId, {
+										transaction : (transactionAddress) => {
+											GO('invadeplanetpresentation/' + planetId + '/' + transactionAddress);
+										}
+									});
 								}
 							}
 						})]
@@ -217,6 +244,38 @@ global.PlanetInfo = CLASS({
 					})
 				})]
 			}).appendTo(SkyEngine.Screen);
+			
+			ContractController.getPlanetInfo(planetId, (planetInfo) => {
+				
+				// 이름 표시
+				namePanel.append(planetInfo[0])
+			});
+			
+			// 전리품 목록을 표시합니다.
+			ContractController.getPlanetPartOriginIds(planetId, (partOriginIds) => {
+				
+				partOriginList.empty();
+				
+				EACH(partOriginIds, (partOriginId) => {
+					ContractController.getPartOriginInfo(partOriginId, (partOriginInfo) => {
+						
+						// 레벨이 1인 애들만 표시
+						if (partOriginInfo[3] === 1) {
+							partOriginList.append(DIV({
+								style : {
+									flt : 'left',
+									width : 160,
+									height : 160,
+									backgroundImage : '/resource/part/' + partOriginInfo[1] + '/' + partOriginInfo[2] + '.png',
+									backgroundSize : 'contain',
+									backgroundPosition : 'center center',
+									backgroundRepeat : 'no-repeat'
+								}
+							}));
+						}
+					});
+				});
+			});
 			
 			rootNode.setAlpha(0);
 			rootNode.fadeIn(2);
