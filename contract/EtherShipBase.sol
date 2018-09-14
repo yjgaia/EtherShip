@@ -29,11 +29,17 @@ contract EtherShipBase {
 	// 회사의 지갑 주소
 	address public company;
 	
+	// 회사만 처리 가능
+	modifier onlyCompany {
+		require(msg.sender == company);
+		_;
+	}
+	
 	// 소유주가 차단되었는지
 	mapping(address => bool) public masterToIsBlocked;
 	
-	// 전함이 차단되었는지
-	mapping(uint256 => bool) public shipIdToIsBlocked;
+	// 부품이 차단되었는지
+	mapping(uint256 => bool) public partIdToIsBlocked;
 	
 	constructor() public {
 		// 계약 생성자를 초기 회사로 등록
@@ -62,10 +68,10 @@ contract EtherShipBase {
 		_;
 	}
 	
-	// 차단된 전함이 아닐 경우에만
-	modifier whenNotBlockedShip(uint256 shipId) {
+	// 차단된 부품이 아닐 경우에만
+	modifier whenNotBlockedPart(uint256 partId) {
 		// 회사는 차단 불가
-		require(msg.sender == company || shipIdToIsBlocked[shipId] != true);
+		require(msg.sender == company || partIdToIsBlocked[partId] != true);
 		_;
 	}
 	

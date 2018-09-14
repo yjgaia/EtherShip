@@ -1,8 +1,7 @@
 RUN(() => {
 	
-	DIV({
-		c : [H1({
-			c : 'EtherShip'
-		})]
-	}).appendTo(BODY);
+	MATCH_VIEW({
+		uri : '',
+		target : Home
+	});
 });
